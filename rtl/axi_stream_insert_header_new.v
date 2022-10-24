@@ -175,8 +175,8 @@ reg [4:0]cnt_out_temp;
             cnt_out_temp <= cnt_out_temp+1'b1;
             if (cnt_out_temp == out_cnt-1'b1) begin
             last_out_reg <= 1'b1;
-            keep_out_reg <= (out_cnt==cnt_temp)?keepin_last<<(DATA_BYTE_WD - byte_insert_cnt):({keep_insert_temp,keepin_last} << (DATA_BYTE_WD - byte_insert_cnt));//根据输出数据量是否比输入多一            
-            end else begin                                                                                                                                         //对最后一个keep的两种赋值方式  
+            keep_out_reg <= {keep_insert_temp,keepin_last} << (DATA_BYTE_WD - byte_insert_cnt);            
+            end else begin                                                                                                                                           
             last_out_reg <= 1'b0;
             keep_out_reg <= {DATA_BYTE_WD{1'b1}};               
             end
@@ -190,7 +190,7 @@ reg [4:0]cnt_out_temp;
     end
 
     assign data_out = data_out_reg[2*DATA_WD-1:DATA_WD];
-    assign keep_out = keep_out_reg[DATA_BYTE_WD-1:0];
+    assign keep_out = (out_cnt == cnt_temp)?keep_out_reg[2*DATA_BYTE_WD-1:DATA_BYTE_WD]:keep_out_reg[DATA_BYTE_WD-1:0];
     assign last_out = last_out_reg;
 
 endmodule
